@@ -1,9 +1,9 @@
 pkgname=linux-image-edge-rockchip64
-pkgver=25.11.0_trunk.414
+pkgver=25.11.0_trunk.429
 _pkgver="${pkgver/_/-}"
-_debhash="Sdcb6-Deeea-P5ac6-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a"
-_kver=6.18.0-rc3
-_kverl=${_kver}${pkgname#linux-@(image|headers)}
+_debhash="S6146-Deeea-P594c-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a"
+_kver=6.18.0-rc4
+_kverl="${_kver}${pkgname#linux-image}"
 pkgrel=1
 pkgdesc="Armbian Linux vendor kernel image $_kverl"
 arch=('aarch64')
