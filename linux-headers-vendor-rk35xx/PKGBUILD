@@ -1,0 +1,23 @@
+pkgname=linux-headers-vendor-rk35xx
+pkgver=25.11.0_trunk.414
+_pkgver="${pkgver/_/-}"
+_debhash="Sdd1b-Deeea-P09c0-C0ff3H7b8f-HK01ba-Vc222-B14f4-R448a"
+_kver="6.1.115"
+_kverl=${_kver}${pkgname#linux-headers}
+pkgrel=1
+pkgdesc="Armbian Linux vendor headers $_kverl"
+arch=('aarch64')
+url="https://www.armbian.com/"
+license=('GPL2' 'custom')
+depends=('python')
+install=${pkgname}.install
+source=("deb::https://beta.armbian.com/pool/main/l/${pkgname}/${pkgname}_${_pkgver}_arm64__${_kver}-${_debhash}.deb")
+sha256sums=('SKIP')
+options=('!debug' '!strip')
+
+package() {
+  cd "$pkgdir"
+  tar xvpf "$srcdir"/data.tar.*
+  
+  mv lib usr/
+}

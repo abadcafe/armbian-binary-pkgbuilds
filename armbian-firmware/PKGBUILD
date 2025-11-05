@@ -1,0 +1,27 @@
+pkgname=armbian-firmware
+pkgver=25.11.0_trunk.414
+_pkgver="${pkgver/_/-}"
+_debhash="SAd39a-B6c7f-R448a"
+pkgrel=1
+pkgdesc="Armbian - Linux firmware"
+arch=('any')
+url="https://www.armbian.com/"
+license=('GPL2' 'custom')
+provides=('linux-firmware' 'firmware-ap6611s')
+source=("deb::https://beta.armbian.com/pool/main/a/${pkgname}/${pkgname}_${_pkgver}_all__1-${_debhash}.deb")
+sha256sums=('SKIP')
+options=('!debug' '!strip')
+
+package() {
+  cd "$pkgdir"
+  tar xvpf "$srcdir/"data.tar.*
+
+  find . -type f -exec chmod 644 {} \;
+  find . -type d -exec chmod 755 {} \;
+  mv lib usr/
+
+  # fix symlinks for ap6611s's firmware.
+  cd "usr/lib/firmware/brcm"
+  ln -s SYN43711A0.hcd "BCM.xunlong,orangepi-5-max.hcd"
+  ln -s SYN43711A0.hcd "BCM.xunlong,orangepi-5-ultra.hcd"
+}

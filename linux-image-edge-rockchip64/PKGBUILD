@@ -1,0 +1,35 @@
+pkgname=linux-image-edge-rockchip64
+pkgver=25.11.0_trunk.414
+_pkgver="${pkgver/_/-}"
+_debhash="Sdcb6-Deeea-P5ac6-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a"
+_kver=6.18.0-rc3
+_kverl=${_kver}${pkgname#linux-@(image|headers)}
+pkgrel=1
+pkgdesc="Armbian Linux vendor kernel image $_kverl"
+arch=('aarch64')
+url="https://www.armbian.com/"
+license=('GPL2' 'custom')
+depends=('coreutils' 'kmod' 'initramfs')
+optdepends=(
+  'armbian-firmware: firmware images needed for some devices'
+  'wireless-regdb: to set the correct wireless channels of your country'
+)
+source=("deb::https://beta.armbian.com/pool/main/l/linux-${_kver}/${pkgname}_${_pkgver}_arm64__${_kver/.0-/-}-${_debhash}.deb")
+sha256sums=('SKIP')
+options=('!debug' '!strip')
+
+package() {
+  cd "$pkgdir"
+  tar xvpf "$srcdir"/data.tar.*
+
+  rm -rf etc
+  mv "usr/lib/linux-image-${_kverl}" "boot/dtbs-${_kverl}"
+  mv lib/* usr/lib/
+  rm -rf lib
+
+  # this action triggers mkinitcpio to build initramfs and copy vmlinuz.
+  mv "boot/vmlinuz-${_kverl}" "usr/lib/modules/${_kverl}/vmlinuz"
+  # mkinitcpio uses content of pkgbase to name vmlinuz, initramfs and
+  # generate preset in /etc/mkinitcpio.d
+  echo "${_kverl}" > "usr/lib/modules/${_kverl}/pkgbase"
+}

@@ -1,0 +1,30 @@
+pkgname=bcmdhd-sdio-dkms
+pkgver=101.10.591.52.27
+pkgrel=5
+_pkgver="${pkgver}-${pkgrel}"
+_pkgpath="usr/src/bcmdhd-sdio-${_pkgver}"
+pkgdesc="Broadcom BCM43xx SDIO fullmac WiFi driver (DKMS)"
+arch=('armv7h' 'aarch64')
+url="https://github.com/armbian/bcmdhd-dkms"
+license=('GPL2')
+depends=('dkms')
+source=(
+  "deb::https://github.com/armbian/bcmdhd-dkms/releases/download/${_pkgver}/${pkgname}_${_pkgver}_all.deb"
+)
+sha256sums=('SKIP')
+
+prepare() {
+  cd "$srcdir"
+  bsdtar -xvf data.tar.*
+}
+
+package() {
+  cd "$pkgdir"
+
+  install -dm755 "$_pkgpath"
+  cp -a "$srcdir/$_pkgpath"/* "$_pkgpath"
+  echo >> "$_pkgpath/dkms.conf"
+  echo 'BUILD_EXCLUSIVE_KERNEL="^6\.1\."' >> "$_pkgpath/dkms.conf"
+  sed -i '/^PACKAGE_VERSION=/ s:-:/:g' "$_pkgpath/dkms.conf"
+  sed -i 's:/$PACKAGE_NAME/$PACKAGE_VERSION/:/$PACKAGE_NAME-$PACKAGE_VERSION/:g' "$_pkgpath/dkms.conf"
+}
