@@ -1,15 +1,15 @@
 pkgname=armbian-firmware
-pkgver=25.11.0_trunk.414
-_pkgver="${pkgver/_/-}"
-_debhash="SAd39a-B6c7f-R448a"
+deburl="https://apt.armbian.com/pool/main/a/armbian-firmware/armbian-firmware_25.8.2_all__1-SAd39a-B6c7f-R448a.deb"
+_pkgver="$(echo "$deburl" | grep -Po '[^/]+$' | cut -f 2 -d'_')"
+pkgver="${_pkgver/-/_}"
 pkgrel=1
 pkgdesc="Armbian - Linux firmware"
 arch=('any')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
 provides=('linux-firmware' 'firmware-ap6611s')
-source=("deb::https://beta.armbian.com/pool/main/a/${pkgname}/${pkgname}_${_pkgver}_all__1-${_debhash}.deb")
-sha256sums=('SKIP')
+source=("$pkgname-$pkgver.deb::$deburl")
+sha256sums=('815d9384904651e3fe54f070d1801cd08a258a7643a02d6723f4fdcb090fed71')
 options=('!debug' '!strip')
 
 package() {

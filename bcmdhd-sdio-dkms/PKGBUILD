@@ -1,30 +1,24 @@
 pkgname=bcmdhd-sdio-dkms
-pkgver=101.10.591.52.27
-pkgrel=5
-_pkgver="${pkgver}-${pkgrel}"
-_pkgpath="usr/src/bcmdhd-sdio-${_pkgver}"
-pkgdesc="Broadcom BCM43xx SDIO fullmac WiFi driver (DKMS)"
+deburl="https://github.com/armbian/bcmdhd-dkms/releases/download/101.10.591.52.27-5/bcmdhd-sdio-dkms_101.10.591.52.27-5_all.deb"
+_pkgver="$(echo "$deburl" | grep -Po '[^/]+$' | cut -f 2 -d'_')"
+pkgver="${_pkgver/-/_}"
+pkgrel=1
+pkgdesc="dkms sources for Broadcom ap6xxx SDIO"
 arch=('armv7h' 'aarch64')
 url="https://github.com/armbian/bcmdhd-dkms"
 license=('GPL2')
 depends=('dkms')
-source=(
-  "deb::https://github.com/armbian/bcmdhd-dkms/releases/download/${_pkgver}/${pkgname}_${_pkgver}_all.deb"
-)
-sha256sums=('SKIP')
-
-prepare() {
-  cd "$srcdir"
-  bsdtar -xvf data.tar.*
-}
+source=("$pkgname-$pkgver.deb::$deburl")
+sha256sums=('ea4ca4bbe0f104f8be319d541c88d51d92709159b49e70d0c5921fda5d372a3f')
+options=('!debug' '!strip')
 
 package() {
   cd "$pkgdir"
+  tar xvpf "$srcdir/"data.tar.*
 
-  install -dm755 "$_pkgpath"
-  cp -a "$srcdir/$_pkgpath"/* "$_pkgpath"
-  echo >> "$_pkgpath/dkms.conf"
-  echo 'BUILD_EXCLUSIVE_KERNEL="^6\.1\."' >> "$_pkgpath/dkms.conf"
-  sed -i '/^PACKAGE_VERSION=/ s:-:/:g' "$_pkgpath/dkms.conf"
-  sed -i 's:/$PACKAGE_NAME/$PACKAGE_VERSION/:/$PACKAGE_NAME-$PACKAGE_VERSION/:g' "$_pkgpath/dkms.conf"
+  local dest_path="usr/src/bcmdhd-sdio-${_pkgver}"
+  echo >> "$dest_path/dkms.conf"
+  echo 'BUILD_EXCLUSIVE_KERNEL="^6\.1\."' >> "$dest_path/dkms.conf"
+  sed -i '/^PACKAGE_VERSION=/ s:-:/:g' "$dest_path/dkms.conf"
+  sed -i 's:/$PACKAGE_NAME/$PACKAGE_VERSION/:/$PACKAGE_NAME-$PACKAGE_VERSION/:g' "$dest_path/dkms.conf"
 }

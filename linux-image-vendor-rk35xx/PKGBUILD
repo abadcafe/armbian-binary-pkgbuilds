@@ -1,9 +1,9 @@
 pkgname=linux-image-vendor-rk35xx
-pkgver=25.11.0_trunk.414
-_pkgver="${pkgver/_/-}"
-_debhash="Sdd1b-Deeea-P09c0-C0ff3H7b8f-HK01ba-Vc222-B14f4-R448a"
-_kver=6.1.115
-_kverl=${_kver}${pkgname#linux-image}
+deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_25.8.2_arm64__6.1.115-Sbd03-Deeea-P09c0-C3b8bH7b8f-HK01ba-Vc222-B14f4-R448a.deb"
+_pkgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
+pkgver="${_pkgver/-/_}"
+_kver="$(echo "$deburl" | grep -Po '(?<=/linux-)[^/]+?(?=/)')"
+_kverl="${_kver}${pkgname#linux-image}"
 pkgrel=1
 pkgdesc="Armbian Linux vendor kernel image $_kverl"
 arch=('aarch64')
@@ -14,8 +14,8 @@ optdepends=(
   'armbian-firmware: firmware images needed for some devices'
   'wireless-regdb: to set the correct wireless channels of your country'
 )
-source=("deb::https://beta.armbian.com/pool/main/l/linux-${_kver}/${pkgname}_${_pkgver}_arm64__${_kver}-${_debhash}.deb")
-sha256sums=('SKIP')
+source=("$pkgname-$pkgver.deb::$deburl")
+sha256sums=('6151c34dc5e5c0166e9baa5181cd90181241769eba293e08aec823dbcd385d1e')
 options=('!debug' '!strip')
 
 package() {

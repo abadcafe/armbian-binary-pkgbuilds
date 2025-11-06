@@ -1,11 +1,11 @@
 pkgname=linux-image-edge-rockchip64
-pkgver=25.11.0_trunk.429
-_pkgver="${pkgver/_/-}"
-_debhash="S6146-Deeea-P594c-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a"
-_kver=6.18.0-rc4
+deburl="https://mirrors.bfsu.edu.cn/armbian/pool/main/l/linux-6.18.0-rc3/linux-image-edge-rockchip64_25.8.2_arm64__6.18-rc3-Sdcb6-Deeea-Pc8ca-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a.deb"
+_pkgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
+pkgver="${_pkgver/-/_}"
+_kver="$(echo "$deburl" | grep -Po '(?<=/linux-)[^/]+?(?=/)')"
 _kverl="${_kver}${pkgname#linux-image}"
 pkgrel=1
-pkgdesc="Armbian Linux vendor kernel image $_kverl"
+pkgdesc="Armbian Linux edge kernel image $_kverl"
 arch=('aarch64')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
@@ -14,8 +14,8 @@ optdepends=(
   'armbian-firmware: firmware images needed for some devices'
   'wireless-regdb: to set the correct wireless channels of your country'
 )
-source=("deb::https://beta.armbian.com/pool/main/l/linux-${_kver}/${pkgname}_${_pkgver}_arm64__${_kver/.0-/-}-${_debhash}.deb")
-sha256sums=('SKIP')
+source=("$pkgname-$pkgver.deb::$deburl")
+sha256sums=('8d236e36e181f070ad8a6095ed3009807946fd89dee61c06decf9ae8b7663299')
 options=('!debug' '!strip')
 
 package() {

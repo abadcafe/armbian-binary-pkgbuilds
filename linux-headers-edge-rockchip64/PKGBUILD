@@ -1,18 +1,18 @@
 pkgname=linux-headers-edge-rockchip64
-pkgver=25.11.0_trunk.429
-_pkgver="${pkgver/_/-}"
-_debhash="S6146-Deeea-P594c-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a"
-_kver="6.18.0-rc4"
-_kverl=${_kver}${pkgname#linux-headers}
+deburl="https://netcup-01.armbian.com/apt/pool/main/l/linux-headers-edge-rockchip64/linux-headers-edge-rockchip64_25.8.2_arm64__6.18-rc3-Sdcb6-Deeea-Pc8ca-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a.deb"
+_pkgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
+pkgver="${_pkgver/-/_}"
+_kver="$(echo "$deburl" | grep -Po '(?<=__)[^/]+\.deb$' | grep -Po '[\d\.]+(-rc\d+)?' | head -n1)"
+_kverl="${_kver}${pkgname#linux-headers}"
 pkgrel=1
-pkgdesc="Armbian Linux vendor headers $_kverl"
+pkgdesc="Armbian Linux edge headers $_kverl"
 arch=('aarch64')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
 depends=('python')
 install=${pkgname}.install
-source=("deb::https://beta.armbian.com/pool/main/l/${pkgname}/${pkgname}_${_pkgver}_arm64__${_kver/.0-/-}-${_debhash}.deb")
-sha256sums=('SKIP')
+source=("$pkgname-$pkgver.deb::$deburl")
+sha256sums=('ee8de40b769d5b47d2916e3a828ad7d9a1db8b01c735badc051ca0ab4a748757')
 options=('!debug' '!strip')
 
 package() {
