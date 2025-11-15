@@ -1,31 +1,53 @@
-THE_PKG_VER="6.1.115-vendor-rk35xx"
-THE_PKG_PATH="usr/src/linux-headers-$THE_PKG_VER"
+PKG_SUFFIX="-vendor-rk35xx"
 
-post_remove() {
-  if [[ -d "$THE_PKG_PATH" ]]; then
-    echo "Cleaning directory /$THE_PKG_PATH ..."
-    rm -rf "$THE_PKG_PATH"
-  fi
-}
+gen_pkg_path() {
+  local pkgver="$1"
+  local pkgpath
+  local kver
 
-post_upgrade() {
-  post_install
+  kver="$(grep -Po '^[\d\.]+(rc\d+)?' <<< "$pkgver" | sed -E 's/\.rc([0-9]+)$/.0-rc\1/')"
+  pkgpath="usr/src/linux-headers-$kver$PKG_SUFFIX"
+  echo "$pkgpath"
 }
 
 post_install() {
+  local pkgver="$1"
+  local pkgpath
   local cpu_numbers
-  cpu_numbers=$(grep -c 'processor' /proc/cpuinfo)
-  cd "$THE_PKG_PATH"
-  echo "Configuring kernel-headers ($THE_PKG_VER) - please wait ..."
+
+  pkgpath="$(gen_pkg_path "$pkgver")"
+  cpu_numbers="$(grep -c 'processor' /proc/cpuinfo)"
+
+  cd "$pkgpath"
+  echo "Configuring kernel-headers ($pkgver) - please wait ..."
   make ARCH="arm64" olddefconfig
 
-  echo "Compiling kernel-headers scripts ($THE_PKG_VER) using $cpu_numbers CPUs - please wait ..."
+  echo "Compiling kernel-headers scripts ($pkgver) using $cpu_numbers CPUs - please wait ..."
   make ARCH="arm64" -j"$cpu_numbers" scripts
 
-  echo "Compiling kernel-headers scripts/mod ($THE_PKG_VER) using $cpu_numbers CPUs - please wait ..."
+  echo "Compiling kernel-headers scripts/mod ($pkgver) using $cpu_numbers CPUs - please wait ..."
   make ARCH="arm64" -j"$cpu_numbers" M=scripts/mod/
 
   # make ARCH="arm64" -j$NCPU modules_prepare # depends on too much other stuff.
-  echo "Done compiling kernel-headers ($THE_PKG_VER)."
-  echo "Done compiling kernel-headers tools ($THE_PKG_VER)."
+  echo "Done compiling kernel-headers ($pkgver)."
+  echo "Done compiling kernel-headers tools ($pkgver)."
+}
+
+post_remove() {
+  local pkgver="$1"
+  local pkgpath
+
+  pkgpath="$(gen_pkg_path "$pkgver")"
+  if [[ -d "$pkgpath" ]]; then
+    echo "Cleaning directory /$pkgpath ..."
+    rm -rf "$pkgpath"
+  fi
+}
+
+pre_upgrade() {
+  post_remove "$2"
+}
+
+post_upgrade() {
+  post_install "$1"
 }
