@@ -1,11 +1,11 @@
 pkgname=linux-image-vendor-rk35xx
-deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_25.8.2_arm64__6.1.115-Sbd03-Deeea-P09c0-C3b8bH7b8f-HK01ba-Vc222-B14f4-R448a.deb"
-_pkgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
-pkgver="${_pkgver/-/_}"
-_kver="$(echo "$deburl" | grep -Po '(?<=/linux-)[^/]+?(?=/)')"
-_kverl="${_kver}${pkgname#linux-image}"
+deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_25.8.2_arm64__6.1.115-Sc08a-Deeea-P09c0-Cf423Hcd09-HK01ba-Vc222-B2135-R448a.deb"
+imgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
+kver="$(echo "$deburl" | grep -Po '(?<=/linux-)[^/]+?(?=/)')"
+kverl="${kver}${pkgname#linux-image}"
+pkgver="${kver/-/.}_armbian_${imgver/-/.}"
 pkgrel=1
-pkgdesc="Armbian Linux vendor kernel image $_kverl"
+pkgdesc="Armbian Linux vendor kernel image $kverl"
 arch=('aarch64')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
@@ -15,7 +15,7 @@ optdepends=(
   'wireless-regdb: to set the correct wireless channels of your country'
 )
 source=("$pkgname-$pkgver.deb::$deburl")
-sha256sums=('6151c34dc5e5c0166e9baa5181cd90181241769eba293e08aec823dbcd385d1e')
+sha256sums=('fdc1cbb65f894404f491f45521d29ffb350b78214494f8670dfe791a23883ffc')
 options=('!debug' '!strip')
 
 package() {
@@ -23,13 +23,13 @@ package() {
   tar xvpf "$srcdir"/data.tar.*
 
   rm -rf etc
-  mv "usr/lib/linux-image-${_kverl}" "boot/dtbs-${_kverl}"
+  mv "usr/lib/linux-image-${kverl}" "boot/dtbs-${kverl}"
   mv lib/* usr/lib/
   rm -rf lib
 
   # this action triggers mkinitcpio to build initramfs and copy vmlinuz.
-  mv "boot/vmlinuz-${_kverl}" "usr/lib/modules/${_kverl}/vmlinuz"
+  mv "boot/vmlinuz-${kverl}" "usr/lib/modules/${kverl}/vmlinuz"
   # mkinitcpio uses content of pkgbase to name vmlinuz, initramfs and
   # generate preset in /etc/mkinitcpio.d
-  echo "${_kverl}" > "usr/lib/modules/${_kverl}/pkgbase"
+  echo "${kverl}" > "usr/lib/modules/${kverl}/pkgbase"
 }

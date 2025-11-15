@@ -1,11 +1,11 @@
 pkgname=linux-image-edge-rockchip64
-deburl="https://mirrors.bfsu.edu.cn/armbian/pool/main/l/linux-6.18.0-rc3/linux-image-edge-rockchip64_25.8.2_arm64__6.18-rc3-Sdcb6-Deeea-Pc8ca-Cb40bH3e0d-HK01ba-Vc222-B14f4-R448a.deb"
-_pkgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
-pkgver="${_pkgver/-/_}"
-_kver="$(echo "$deburl" | grep -Po '(?<=/linux-)[^/]+?(?=/)')"
-_kverl="${_kver}${pkgname#linux-image}"
+deburl="https://apt.armbian.com/pool/main/l/linux-6.18.0-rc5/linux-image-edge-rockchip64_25.8.2_arm64__6.18-rc5-Se9a6-Deeea-Pc12b-C8ef0Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
+imgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
+kver="$(echo "$deburl" | grep -Po '(?<=/linux-)[^/]+?(?=/)')"
+kverl="${kver}${pkgname#linux-image}"
+pkgver="${kver/-/.}_armbian_${imgver/-/.}"
 pkgrel=1
-pkgdesc="Armbian Linux edge kernel image $_kverl"
+pkgdesc="Armbian Linux edge kernel image $kverl"
 arch=('aarch64')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
@@ -15,7 +15,7 @@ optdepends=(
   'wireless-regdb: to set the correct wireless channels of your country'
 )
 source=("$pkgname-$pkgver.deb::$deburl")
-sha256sums=('8d236e36e181f070ad8a6095ed3009807946fd89dee61c06decf9ae8b7663299')
+sha256sums=('0289ef5ce312b2570b68c38036af4c72cbb4c6f9658e150fd830405050723fa6')
 options=('!debug' '!strip')
 
 package() {
@@ -23,13 +23,13 @@ package() {
   tar xvpf "$srcdir"/data.tar.*
 
   rm -rf etc
-  mv "usr/lib/linux-image-${_kverl}" "boot/dtbs-${_kverl}"
+  mv "usr/lib/linux-image-${kverl}" "boot/dtbs-${kverl}"
   mv lib/* usr/lib/
   rm -rf lib
 
   # this action triggers mkinitcpio to build initramfs and copy vmlinuz.
-  mv "boot/vmlinuz-${_kverl}" "usr/lib/modules/${_kverl}/vmlinuz"
+  mv "boot/vmlinuz-${kverl}" "usr/lib/modules/${kverl}/vmlinuz"
   # mkinitcpio uses content of pkgbase to name vmlinuz, initramfs and
   # generate preset in /etc/mkinitcpio.d
-  echo "${_kverl}" > "usr/lib/modules/${_kverl}/pkgbase"
+  echo "${kverl}" > "usr/lib/modules/${kverl}/pkgbase"
 }
