@@ -1,8 +1,9 @@
 pkgname=linux-headers-vendor-rk35xx
 deburl="https://apt.armbian.com/pool/main/l/linux-headers-vendor-rk35xx/linux-headers-vendor-rk35xx_25.8.2_arm64__6.1.115-Sc08a-Deeea-P09c0-Cf423Hcd09-HK01ba-Vc222-B2135-R448a.deb"
-imgver="$(echo "$deburl" | grep -Po '[^/]+.deb$' | cut -f 2 -d'_')"
-kver="$(echo "$deburl" | grep -Po '(?<=__)[^/]+\.deb$' | grep -Po '[\d\.]+(-rc\d+)?' | head -n1)"
-kverl="${kver}${pkgname#linux-headers}"
+debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
+imgver="$(cut -f2 -d'_' <<< "$debname")"
+kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
+kverl="$(sed -E 's/-rc([0-9]+)$/.0-rc\1/' <<< "$kver")-vendor-rk35xx"
 pkgver="${kver/-/.}_armbian_${imgver/-/.}"
 pkgrel=1
 pkgdesc="Armbian Linux vendor headers $kverl"
@@ -11,7 +12,7 @@ url="https://www.armbian.com/"
 license=('GPL2' 'custom')
 depends=('python')
 install=${pkgname}.install
-source=("$pkgname-$pkgver.deb::$deburl")
+source=("$debname::$deburl")
 sha256sums=('f36a0e1bc9a1fe2cffde81f2c3e4db473b13c194c5ec0b7950d794593f335954')
 options=('!debug' '!strip')
 
