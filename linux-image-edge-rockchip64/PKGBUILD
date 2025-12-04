@@ -1,10 +1,10 @@
 pkgname=linux-image-edge-rockchip64
-deburl="https://apt.armbian.com/pool/main/l/linux-6.18.0-rc5/linux-image-edge-rockchip64_25.8.2_arm64__6.18-rc5-Se9a6-Deeea-Pc12b-C8ef0Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-6.18.0-rc6/linux-image-edge-rockchip64_25.11.2_arm64__6.18-rc6-S6a23-Deeea-P9106-C43f6Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
-imgver="$(cut -f2 -d'_' <<< "$debname")"
+debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
 kverl="$(sed -E 's/-rc([0-9]+)$/.0-rc\1/' <<< "$kver")-edge-rockchip64"
-pkgver="${kver/-/.}_armbian_${imgver/-/.}"
+pkgver="${kver/-/.}_armbian_${debver/-/.}"
 pkgrel=1
 pkgdesc="Armbian Linux edge kernel image $kverl"
 arch=('aarch64')
@@ -16,7 +16,7 @@ optdepends=(
   'wireless-regdb: to set the correct wireless channels of your country'
 )
 source=("$debname::$deburl")
-sha256sums=('0289ef5ce312b2570b68c38036af4c72cbb4c6f9658e150fd830405050723fa6')
+sha256sums=('1020d480e9519f95e1a14661a0f98e3ce6f3e8de7d12d6497f0e1f8bf9b35bed')
 options=('!debug' '!strip')
 
 package() {

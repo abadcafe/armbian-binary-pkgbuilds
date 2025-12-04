@@ -1,10 +1,10 @@
 pkgname=linux-headers-edge-rockchip64
-deburl="https://apt.armbian.com/pool/main/l/linux-headers-edge-rockchip64/linux-headers-edge-rockchip64_25.8.2_arm64__6.18-rc5-Se9a6-Deeea-Pc12b-C8ef0Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-headers-edge-rockchip64/linux-headers-edge-rockchip64_25.11.2_arm64__6.18-rc6-S6a23-Deeea-P9106-C43f6Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
-imgver="$(cut -f2 -d'_' <<< "$debname")"
+debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
 kverl="$(sed -E 's/-rc([0-9]+)$/.0-rc\1/' <<< "$kver")-edge-rockchip64"
-pkgver="${kver/-/.}_armbian_${imgver/-/.}"
+pkgver="${kver/-/.}_armbian_${debver/-/.}"
 pkgrel=1
 pkgdesc="Armbian Linux edge headers $kverl"
 arch=('aarch64')
@@ -13,7 +13,7 @@ license=('GPL2' 'custom')
 depends=('python')
 install="${pkgname}.install"
 source=("$debname::$deburl")
-sha256sums=('8d1cfdb44e29273f6fb95f7645efea38147382412be746af6d8287bfa84414b8')
+sha256sums=('253e5cee9f2c4e41c59e02954045136fa710cbe95aebb386e89b18656c8be0d4')
 options=('!debug' '!strip')
 
 package() {
