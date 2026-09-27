@@ -1,5 +1,5 @@
 pkgname=linux-image-vendor-rk35xx
-deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_25.11.2_arm64__6.1.115-Sf6a8-Deeea-P09c0-Cf4d3Hcd09-HK01ba-Vc222-B2135-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_26.2.1_arm64__6.1.115-S34ab-D1d59-P09c0-C9346-H3522-HK01ba-Vc222-B052a-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
@@ -16,7 +16,7 @@ optdepends=(
   'wireless-regdb: to set the correct wireless channels of your country'
 )
 source=("$debname::$deburl")
-sha256sums=('876a5211e94266eceb02962c90fb76bf48b13beae3b26e415687424a67bd7a8a')
+sha256sums=('0f267068edad21635328b2c1c7a8792afadc7fd42c36bbc90310448d9d147d93')
 options=('!debug' '!strip')
 
 package() {

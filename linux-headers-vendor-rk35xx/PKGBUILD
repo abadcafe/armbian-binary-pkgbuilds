@@ -1,5 +1,5 @@
 pkgname=linux-headers-vendor-rk35xx
-deburl="https://apt.armbian.com/pool/main/l/linux-headers-vendor-rk35xx/linux-headers-vendor-rk35xx_25.11.2_arm64__6.1.115-Sf6a8-Deeea-P09c0-Cf4d3Hcd09-HK01ba-Vc222-B2135-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-headers-vendor-rk35xx/linux-headers-vendor-rk35xx_26.2.1_arm64__6.1.115-S34ab-D1d59-P09c0-C9346-H3522-HK01ba-Vc222-B052a-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
@@ -13,7 +13,7 @@ license=('GPL2' 'custom')
 depends=('python')
 install="${pkgname}.install"
 source=("$debname::$deburl")
-sha256sums=('fae22e1c57dd175e0b8abeae08fdd2fb373a2fca8f0e00d4988fa1fca7a52f86')
+sha256sums=('cb331cf29a5399f4ea5b4ac2c3b27f79314a7e5dee11f05bc9c08859addf9d23')
 options=('!debug' '!strip')
 
 package() {
