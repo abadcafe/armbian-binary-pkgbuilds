@@ -1,5 +1,5 @@
 pkgname=linux-image-edge-rockchip64
-deburl="https://apt.armbian.com/pool/main/l/linux-6.18.0-rc6/linux-image-edge-rockchip64_25.11.2_arm64__6.18-rc6-S6a23-Deeea-P9106-C43f6Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-7.1.8/linux-image-edge-rockchip64_26.8.3_arm64__7.1.8-S25c7-D5397-P9a48-Cf756-H2153-HK01ba-Vc222-B4990-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
@@ -16,7 +16,7 @@ optdepends=(
   'wireless-regdb: to set the correct wireless channels of your country'
 )
 source=("$debname::$deburl")
-sha256sums=('1020d480e9519f95e1a14661a0f98e3ce6f3e8de7d12d6497f0e1f8bf9b35bed')
+sha256sums=('2b8ba27d49a939baed1c7b49d8373e68a4f4747a6782a14d5841e2b6702ad564')
 options=('!debug' '!strip')
 
 package() {

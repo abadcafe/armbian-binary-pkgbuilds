@@ -1,5 +1,5 @@
 pkgname=linux-headers-edge-rockchip64
-deburl="https://apt.armbian.com/pool/main/l/linux-headers-edge-rockchip64/linux-headers-edge-rockchip64_25.11.2_arm64__6.18-rc6-S6a23-Deeea-P9106-C43f6Hfdd9-HK01ba-Vc222-B2135-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-headers-edge-rockchip64/linux-headers-edge-rockchip64_26.8.3_arm64__7.1.8-S25c7-D5397-P9a48-Cf756-H2153-HK01ba-Vc222-B4990-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
@@ -13,7 +13,7 @@ license=('GPL2' 'custom')
 depends=('python')
 install="${pkgname}.install"
 source=("$debname::$deburl")
-sha256sums=('253e5cee9f2c4e41c59e02954045136fa710cbe95aebb386e89b18656c8be0d4')
+sha256sums=('2e6496308bf4895fabe7f473efeabb1f7a1d20170b544e700aa1d21465d94ac9')
 options=('!debug' '!strip')
 
 package() {

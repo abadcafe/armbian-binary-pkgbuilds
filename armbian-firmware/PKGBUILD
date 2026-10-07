@@ -1,5 +1,5 @@
 pkgname=armbian-firmware
-deburl="https://apt.armbian.com/pool/main/a/armbian-firmware/armbian-firmware_26.2.1_all__1-SAf065-B96c8-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/a/armbian-firmware/armbian-firmware_26.8.3_all__1-SAf50a-B96c8-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 pkgver="${debver/-/_}"
@@ -10,7 +10,7 @@ url="https://www.armbian.com/"
 license=('GPL2' 'custom')
 provides=('linux-firmware' 'firmware-ap6611s')
 source=("$debname::$deburl")
-sha256sums=('53525a1077aa9dd7356da4cd04d49ded2830892fbe8d73535dfb60f56bbc3528')
+sha256sums=('3d916c0db4efbe3b7a18fb8b4ef06e61c42185b475a759d4fdb61140f23a0286')
 options=('!debug' '!strip')
 
 package() {

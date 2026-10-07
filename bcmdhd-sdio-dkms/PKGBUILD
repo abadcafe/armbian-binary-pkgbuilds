@@ -1,5 +1,5 @@
 pkgname=bcmdhd-sdio-dkms
-deburl="https://github.com/armbian/bcmdhd-dkms/releases/download/101.10.591.52.27-5/bcmdhd-sdio-dkms_101.10.591.52.27-5_all.deb"
+deburl="https://github.com/armbian/bcmdhd-dkms/releases/download/101.10.591.52.27-9/bcmdhd-sdio-dkms_101.10.591.52.27-9_all.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 pkgver="${debver/-/_}"
@@ -10,7 +10,7 @@ url="https://github.com/armbian/bcmdhd-dkms"
 license=('GPL2')
 depends=('dkms')
 source=("$debname::$deburl")
-sha256sums=('ea4ca4bbe0f104f8be319d541c88d51d92709159b49e70d0c5921fda5d372a3f')
+sha256sums=('9dcc8791f787ef3a34283975c4698210a11375be54804141443dfc13f3283c7a')
 options=('!debug' '!strip')
 
 package() {

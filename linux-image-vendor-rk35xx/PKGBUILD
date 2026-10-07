@@ -1,5 +1,5 @@
 pkgname=linux-image-vendor-rk35xx
-deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_26.2.1_arm64__6.1.115-S34ab-D1d59-P09c0-C9346-H3522-HK01ba-Vc222-B052a-R448a.deb"
+deburl="https://apt.armbian.com/pool/main/l/linux-6.1.115/linux-image-vendor-rk35xx_26.8.3_arm64__6.1.115-S5280-D5397-Pfe89-Ce24e-H213f-HK01ba-Vc222-B4990-R448a.deb"
 debname="$(grep -Po '[^/]+\.deb$' <<< "$deburl")"
 debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
@@ -16,7 +16,7 @@ optdepends=(
   'wireless-regdb: to set the correct wireless channels of your country'
 )
 source=("$debname::$deburl")
-sha256sums=('0f267068edad21635328b2c1c7a8792afadc7fd42c36bbc90310448d9d147d93')
+sha256sums=('fed812d3b906b91cfa13270a976d860dc9061f520e5e6222248547881d07a29f')
 options=('!debug' '!strip')
 
 package() {
@@ -27,6 +27,9 @@ package() {
   mv "usr/lib/linux-image-${kverl}" "boot/dtbs-${kverl}"
   mv lib/* usr/lib/
   rm -rf lib
+
+  # depmod generates this locally; do not ship it in the package.
+  rm -f "usr/lib/modules/${kverl}/modules.weakdep"
 
   # this action triggers mkinitcpio to build initramfs and copy vmlinuz.
   mv "boot/vmlinuz-${kverl}" "usr/lib/modules/${kverl}/vmlinuz"
