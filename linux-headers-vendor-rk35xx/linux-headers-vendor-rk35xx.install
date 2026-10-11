@@ -28,9 +28,18 @@ post_install() {
   echo "Compiling kernel-headers scripts/mod ($pkgver) using $cpu_numbers CPUs - please wait ..."
   make ARCH="arm64" -j"$cpu_numbers" M=scripts/mod/
 
+  echo "Compiling resolve_btfids tools for assigning stable BTF type IDs to kernel symbols"
+  make ARCH="arm64" -j"$cpu_numbers" tools/bpf/resolve_btfids
+
   # make ARCH="arm64" -j$NCPU modules_prepare # depends on too much other stuff.
   echo "Done compiling kernel-headers ($pkgver)."
   echo "Done compiling kernel-headers tools ($pkgver)."
+
+  # Restore build-time config after all make steps. See: https://github.com/armbian/build/issues/9425
+  if [[ -f include/generated/.armbian-build.tar.gz ]]; then
+    tar -C . -xzf include/generated/.armbian-build.tar.gz
+    rm -f include/generated/.armbian-build.tar.gz
+  fi
 }
 
 post_remove() {

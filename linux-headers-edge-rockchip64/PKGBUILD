@@ -5,12 +5,12 @@ debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
 kverl="$(sed -E 's/-rc([0-9]+)$/.0-rc\1/' <<< "$kver")-edge-rockchip64"
 pkgver="${kver/-/.}_armbian_${debver/-/.}"
-pkgrel=1
+pkgrel=2
 pkgdesc="Armbian Linux edge headers $kverl"
 arch=('aarch64')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
-depends=('python')
+depends=('python' 'pahole')
 install="${pkgname}.install"
 source=("$debname::$deburl")
 sha256sums=('2e6496308bf4895fabe7f473efeabb1f7a1d20170b544e700aa1d21465d94ac9')

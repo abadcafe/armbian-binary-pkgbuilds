@@ -5,12 +5,12 @@ debver="$(cut -f2 -d'_' <<< "$debname")"
 kver="$(grep -Po '(?<=__)[\d\.]+(-rc\d+)?' <<< "$debname" | head -n1)"
 kverl="$(sed -E 's/-rc([0-9]+)$/.0-rc\1/' <<< "$kver")-vendor-rk35xx"
 pkgver="${kver/-/.}_armbian_${debver/-/.}"
-pkgrel=1
+pkgrel=2
 pkgdesc="Armbian Linux vendor headers $kverl"
 arch=('aarch64')
 url="https://www.armbian.com/"
 license=('GPL2' 'custom')
-depends=('python')
+depends=('python' 'pahole')
 install="${pkgname}.install"
 source=("$debname::$deburl")
 sha256sums=('da998de3ea8468593501553a1ffe23e5c7545d0a9def69775bda5317eab7c15a')
