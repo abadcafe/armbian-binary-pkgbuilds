@@ -1,0 +1,81 @@
+# Build the service and vendor-only DKMS sources from the same pinned commit.
+pkgbase=v4l2-stateful-rkmpp
+pkgname=('v4l2-rkmpp-bridge-dkms' 'v4l2-stateful-rkmpp')
+pkgver=0.1.0
+pkgrel=2
+pkgdesc='Rockchip MPP V4L2 stateful decoding bridge'
+arch=('aarch64')
+url='https://github.com/abadcafe/v4l2-stateful-rkmpp'
+_commit=802e8fdd3b1a9fe2de4b63201e3b57f6156294ba
+makedepends=(
+  'git' 'rust' 'glslang' 'rockchip-mpp' 'vulkan-icd-loader'
+)
+options=('!debug' '!strip')
+source=(
+  "$pkgbase::git+$url.git#commit=$_commit"
+  'dkms.conf'
+  'v4l2-stateful-rkmpp.modules'
+  'v4l2-stateful-rkmpp.service'
+  'v4l2-stateful-rkmpp.sysusers'
+  'v4l2-stateful-rkmpp.tmpfiles'
+  '70-v4l2-stateful-rkmpp.rules'
+)
+sha256sums=(
+  'SKIP'
+  'e54b762528fc9e5357e6fd8ce9b50b2e7347a09be5b12bef72cf73ef6b19aba3'
+  'ebe2d2bce6815a5063f9f7735628bbff240b63a8f13bc56f8d2043d5639562c7'
+  '8bef44dac4825a41ee4191fbbb86b1405cd5b9a991cbd1492e01d8f64edab13e'
+  'a6ab704f490e1ab9b216c7f715b1ff6893b60d7fa87ccbfa19079b7e6fe96566'
+  '3f5fd84983ca334a3f8bcf6c8c4c81f4f13a2eb6ea8ca0ff57a80c8e657e93da'
+  '5b68f0190e5313b17ca7438abf523d4aad95aeedbf6e137bc4856bf72bc9ebdb'
+)
+
+prepare() {
+  cd "$srcdir/$pkgbase" || return
+  cargo fetch --locked
+}
+
+build() {
+  cd "$srcdir/$pkgbase" || return
+  cargo build --release --frozen
+}
+
+check() {
+  cd "$srcdir/$pkgbase" || return
+  cargo test --frozen -- --test-threads=1
+}
+
+package_v4l2-rkmpp-bridge-dkms() {
+  pkgdesc='Vendor-only DKMS sources for the V4L2 stateful RKMPP bridge'
+  license=('GPL-2.0-only')
+  depends=('dkms' 'pahole' 'linux-image-vendor-rk35xx' 'linux-headers-vendor-rk35xx')
+  conflicts=('v4l2-rkmpp-bridge')
+  local source_dir="$pkgdir/usr/src/v4l2-rkmpp-bridge-$pkgver"
+  install -dm755 "$source_dir"
+  local file
+  while IFS= read -r -d '' file; do
+    install -m644 "$srcdir/$pkgbase/$file" "$source_dir/"
+  done < <(git -C "$srcdir/$pkgbase" ls-files -z kernel)
+  install -m644 "$srcdir/dkms.conf" "$source_dir/dkms.conf"
+  sed -i "s/@VERSION@/$pkgver/" "$source_dir/dkms.conf"
+  install -Dm644 "$srcdir/v4l2-stateful-rkmpp.modules" \
+    "$pkgdir/usr/lib/modules-load.d/v4l2-rkmpp-bridge.conf"
+}
+
+package_v4l2-stateful-rkmpp() {
+  pkgdesc='Rockchip MPP userspace service for the V4L2 stateful bridge'
+  # Upstream does not yet declare a userspace license.
+  license=('custom:unknown')
+  depends=("v4l2-rkmpp-bridge-dkms=$pkgver-$pkgrel" 'glibc' 'gcc-libs'
+           'rockchip-mpp' 'vulkan-icd-loader' 'vulkan-panfrost' 'systemd')
+  install -Dm755 "$srcdir/$pkgbase/target/release/v4l2-stateful-rkmpp" \
+    "$pkgdir/usr/bin/v4l2-stateful-rkmpp"
+  install -Dm644 "$srcdir/v4l2-stateful-rkmpp.service" \
+    "$pkgdir/usr/lib/systemd/system/v4l2-stateful-rkmpp.service"
+  install -Dm644 "$srcdir/v4l2-stateful-rkmpp.sysusers" \
+    "$pkgdir/usr/lib/sysusers.d/v4l2-stateful-rkmpp.conf"
+  install -Dm644 "$srcdir/v4l2-stateful-rkmpp.tmpfiles" \
+    "$pkgdir/usr/lib/tmpfiles.d/v4l2-stateful-rkmpp.conf"
+  install -Dm644 "$srcdir/70-v4l2-stateful-rkmpp.rules" \
+    "$pkgdir/usr/lib/udev/rules.d/70-v4l2-stateful-rkmpp.rules"
+}

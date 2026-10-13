@@ -1,0 +1,29 @@
+pkgname=rockchip-mpp
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="Rockchip Media Process Platform libraries"
+arch=('armv7h' 'aarch64')
+url="https://github.com/rockchip-linux/mpp"
+license=('Apache-2.0' 'MIT')
+makedepends=('cmake' 'pkgconf')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('7bb0040f364468ad9abbb71a04553ebc6a5814584e083c2fc9a553783e9656df')
+options=('!debug' '!strip')
+
+build() {
+  cmake -B "$srcdir/build" -S "$srcdir/mpp-$pkgver" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DBUILD_TEST=OFF
+
+  cmake --build "$srcdir/build" --parallel "$(nproc)"
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install "$srcdir/build"
+
+  install -dm755 "$pkgdir/usr/share/licenses/$pkgname"
+  install -m644 "$srcdir/mpp-$pkgver"/LICENSES/* \
+    "$pkgdir/usr/share/licenses/$pkgname/"
+}

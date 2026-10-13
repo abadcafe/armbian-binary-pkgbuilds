@@ -1,0 +1,20 @@
+# All access granted by this file is root:video 0660.
+
+# Bridge broker and the dynamically numbered V4L2 decoder node.
+ACTION=="add|change", SUBSYSTEM=="misc", KERNEL=="v4l2-rkmpp-control", OWNER:="root", GROUP:="video", MODE:="0660", TAG+="systemd"
+ACTION=="add|change", SUBSYSTEM=="video4linux", ATTR{name}=="v4l2_rkmpp_bridge", OWNER:="root", GROUP:="video", MODE:="0660"
+
+# Vendor MPP tasks and the cached/uncached DMA heaps used by decoding.
+ACTION=="add|change", SUBSYSTEM=="mpp_class", KERNEL=="mpp_service", OWNER:="root", GROUP:="video", MODE:="0660"
+ACTION=="add|change", SUBSYSTEM=="dma_heap", KERNEL=="system|system-uncached", OWNER:="root", GROUP:="video", MODE:="0660"
+
+# Mali rendering and Vulkan compute; match the driver, not renderD numbering.
+ACTION=="add|change", SUBSYSTEM=="drm", KERNEL=="renderD*", DRIVERS=="panthor", OWNER:="root", GROUP:="video", MODE:="0660"
+
+# Benchmark controls: grant access without changing either parameter value.
+# GROUP/MODE apply to device nodes, so sysfs/procfs need chgrp/chmod.
+ACTION=="add|change", SUBSYSTEM=="devfreq", DRIVERS=="panthor", TEST=="/sys%p/min_freq", RUN+="/usr/bin/chgrp video /sys%p/min_freq", RUN+="/usr/bin/chmod 0660 /sys%p/min_freq"
+
+# MPP creates load_interval after registering its character device. The parent
+# platform bind event follows probe completion; add handles boot enumeration.
+ACTION=="add|bind|change", SUBSYSTEM=="platform", KERNEL=="mpp-srv", DRIVER=="mpp_service", TEST=="/proc/mpp_service/load_interval", RUN+="/usr/bin/chgrp video /proc/mpp_service/load_interval", RUN+="/usr/bin/chmod 0660 /proc/mpp_service/load_interval"

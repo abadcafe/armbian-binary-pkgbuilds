@@ -1,0 +1,3 @@
+# Directory execute/write bits are required to create video:0660 sockets.
+# The setgid bit preserves the video group for manual and systemd services.
+d /run/v4l2-stateful-rkmpp 2770 root video -
