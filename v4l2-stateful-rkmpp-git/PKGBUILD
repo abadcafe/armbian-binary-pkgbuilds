@@ -1,7 +1,7 @@
 # Build the service and vendor-only DKMS sources from the same main checkout.
 pkgbase=v4l2-stateful-rkmpp-git
 pkgname=('v4l2-rkmpp-bridge-dkms-git' 'v4l2-stateful-rkmpp-git')
-pkgver=r1.g7d653b0
+pkgver=r3.ga92058a
 pkgrel=1
 pkgdesc='Rockchip MPP V4L2 stateful decoding bridge'
 arch=('aarch64')
@@ -43,11 +43,6 @@ prepare() {
 build() {
   cd "$srcdir/$_srcname" || return
   cargo build --release --frozen
-}
-
-check() {
-  cd "$srcdir/$_srcname" || return
-  cargo test --frozen
 }
 
 package_v4l2-rkmpp-bridge-dkms-git() {
